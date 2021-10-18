@@ -53,24 +53,17 @@ class StartWind {
     public JPanel firstPanel;
     static JFrame mainWinJF = new JFrame();
     static Integer timerSecond = 1;
-
     public void StartWind() {
         firstArrayBoard.NGBoard();
-
-
         mainWinJF.setTitle("REVERSI 3.0.1 ");
         mainWinJF.setSize(new Dimension(400, 600));
         mainWinJF.setLocation(900, 100);
         mainWinJF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWinJF.setSize(550, 550);
-
         Board replaceBoard = new Board();
         firstPanel = replaceBoard.Board(firstArrayBoard.bolvanchikArrayBoard);
         JLayeredPane jLayersfSP = new JLayeredPane();
-
         mainWinJF.add(firstPanel);
-
-
         try {
             if (!file1.exists()) {
                 file1.createNewFile();
@@ -106,8 +99,6 @@ class StartWind {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
         JMenuBar mainWindMB = new JMenuBar();
 
         JMenu menu1 = new JMenu("File");
@@ -136,7 +127,6 @@ class StartWind {
         menu3.add(menuItem3Close);
         menu4.add(menuItem4Exit);
 
-
         mainWindMB.add(menu1);
         mainWindMB.add(menu2);
         mainWindMB.add(menu3);
@@ -144,7 +134,6 @@ class StartWind {
 
         mainWinJF.setJMenuBar(mainWindMB);
         mainWinJF.setVisible(true);
-
 
         menuItem1New.addActionListener(new ActionListener() {
             @Override
