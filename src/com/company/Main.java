@@ -53,6 +53,7 @@ class StartWind {
     public JPanel firstPanel;
     static JFrame mainWinJF = new JFrame();
     static Integer timerSecond = 1;
+
     public void StartWind() {
         firstArrayBoard.NGBoard();
         mainWinJF.setTitle("REVERSI 3.0.1 ");
@@ -395,44 +396,48 @@ class ArrayBoard {
 
             if (blackOrWhite.equals("-1")) {                                                     // white
 
-                if (m - 1 >= 0) {
+                if (m - 1 > -1) {
                     if (this.bolvanchikArrayBoard[n][m - 1] == 1) {                                          //Right
-                        for (int i = m - 1; i >-1; i--) {
+                        for (int i = m - 1; i > -1; i--) {
                             if (this.bolvanchikArrayBoard[n][i] == -1) sideRIGH = -1;
                             if (this.bolvanchikArrayBoard[n][i] == 9) break;
                         }
                     }
                 }
-                if (n + 1 <= 7) {
-                    if (this.bolvanchikArrayBoard[n + 1][m] == 1) {                                       //UP
-                        for (int i = n + 1; i <=7; i++) {
-                            if (this.bolvanchikArrayBoard[i][m] == -1) sideUP = -1;
-                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
-                        }
-                    }
-                }
-                if (m + 1 <= 7) {
-                    if (this.bolvanchikArrayBoard[n][m + 1] == 1) {                                          //LEFT
-                        for (int i = m + 1; i <=7; i++) {
-                            if (this.bolvanchikArrayBoard[n][i] == -1) sideLEFT = -1;
-                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
-                        }
-                    }
-                }
-                if (n - 1 >= 0) {
+                if (n - 1 > -1) {
                     if (this.bolvanchikArrayBoard[n - 1][m] == 1) {                                       //DOWN
-                        for (int i = n - 1;  i >-1; i--) {
+                        for (int i = n - 1; i > -1; i--) {
                             if (this.bolvanchikArrayBoard[i][m] == -1) sideDOWN = -1;
                             if (this.bolvanchikArrayBoard[i][m] == 9) break;
 
                         }
                     }
                 }
-                if ((m - 1 >= 0) && (n + 1 <= 7)) {                                          // UP-RIGHT
-                    if (this.bolvanchikArrayBoard[n+ 1][m - 1] == 1) {
+                if (n + 1 < 8) {
+                    if (this.bolvanchikArrayBoard[n + 1][m] == 1) {                                       //UP
+                        for (int i = n + 1; i < 8; i++) {
+                            if (this.bolvanchikArrayBoard[i][m] == -1) sideUP = -1;
+                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
+                        }
+                    }
+
+                }
+                if (m + 1 < 8) {
+                    if (this.bolvanchikArrayBoard[n][m + 1] == 1) {                                          //LEFT
+                        for (int i = m + 1; i < 8; i++) {
+                            if (this.bolvanchikArrayBoard[n][i] == -1) sideLEFT = -1;
+                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
+                        }
+                    }
+                }
+
+                if ((m - 1 > 0) && (n + 1 < 7)) {                                          // UP-RIGHT
+                    System.out.print("WORK UR!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n + 1][m - 1] == 1) {
                         int i = n + 1;
                         int j = m - 1;
-                        while ((i <= 7) && (j>= 0)) {
+
+                        while ((i <= 7) && (j >= 0)) {
                             if (this.bolvanchikArrayBoard[i][j] == -1) sideUR = -1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i++;
@@ -441,11 +446,12 @@ class ArrayBoard {
                         }
                     }
                 }
-                if ((m + 1 <= 7) && (n + 1 <= 7)) {                                          // LEFT_UP
-                    if (this.bolvanchikArrayBoard[n+ 1][m + 1] == 1) {
+                if ((m + 1 < 7) && (n + 1 < 7)) {                                          // LEFT_UP
+                    System.out.print("WORK LU!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n + 1][m + 1] == 1) {
                         int i = n + 1;
                         int j = m + 1;
-                        while ((i <= 7) && (j<=7)) {
+                        while ((i <= 7) && (j <= 7)) {
                             if (this.bolvanchikArrayBoard[i][j] == -1) sideLU = -1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i++;
@@ -454,11 +460,12 @@ class ArrayBoard {
                         }
                     }
                 }
-                if ((m + 1 <= 7) && (n- 1 >= 0 )) {                                          // Down-left
-                    if (this.bolvanchikArrayBoard[n- 1][m+ 1] == 1) {
+                if ((m + 1 < 7) && (n - 1 > 0)) {                                          // Down-left
+                    System.out.print("WORK DL!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n - 1][m + 1] == 1) {
                         int i = n - 1;
                         int j = m + 1;
-                        while ((i >= 0) && (j<= 7)) {
+                        while ((i >= 0) && (j <= 7)) {
                             if (this.bolvanchikArrayBoard[i][j] == -1) sideDL = -1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i--;
@@ -467,11 +474,12 @@ class ArrayBoard {
                         }
                     }
                 }
-                if ((m + 1 <= 7) && (n + 1 <= 7)) {                                          // RIGHT-Down
-                    if (this.bolvanchikArrayBoard[n- 1][m - 1] == 1) {
+                if ((m -1 > -1 ) && (n -1 > -1 )) {                                          // RIGHT-Down
+                    System.out.print("WORK RD!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n - 1][m - 1] == 1) {
                         int i = n - 1;
                         int j = m - 1;
-                        while ((i <= 7) && (j <= 7)) {
+                        while ((i >= 0) && (j >= 0)) {
                             if (this.bolvanchikArrayBoard[i][j] == -1) sideRD = -1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i--;
@@ -492,17 +500,19 @@ class ArrayBoard {
                     }
                 }
                 if (sideUP == -1) {                                                               //UP
-                    for (int i = n; i <= 7; i++) {
+                    for (int i = n + 1; i < 8; i++) {
                         if (this.bolvanchikArrayBoard[i][m] == 1) {
                             this.bolvanchikArrayBoard[i][m] = -1;
+                            this.bolvanchikArrayBoard[n][m] = -1;
                             continue;
+
                         }
                         if (this.bolvanchikArrayBoard[i][m] == -1) break;
-                        this.bolvanchikArrayBoard[n][m] = -1;
+                        if (i == 7) break;
                     }
                 }
                 if (sideLEFT == -1) {                                                               //Left
-                    for (int i = m; i < 7; i++) {
+                    for (int i = m; i < 8; i++) {
                         if (this.bolvanchikArrayBoard[n][i] == 1) {
                             this.bolvanchikArrayBoard[n][i] = -1;
                             this.bolvanchikArrayBoard[n][m] = -1;
@@ -525,9 +535,9 @@ class ArrayBoard {
                 }
                 if (sideRD == -1) {                                                             //RIGHT-Down
                     System.out.print("RDRDRDRDRDRDRDRDRDRDRDRDRDRDRDRD");
-                    int j = m-1;
-                    int i = n-1;
-                    while ((j >-1) && (i >-1) ) {
+                    int j = m - 1;
+                    int i = n - 1;
+                    while ((j > -1) && (i > -1)) {
 
                         if (this.bolvanchikArrayBoard[i][j] == 1) {
                             this.bolvanchikArrayBoard[i][j] = -1;
@@ -544,9 +554,9 @@ class ArrayBoard {
                 }
                 if (sideUR == -1) {                                                             //UP-Right
                     System.out.print("UPUPUPUPUPUPUPUPUUPUPUPUPUPUPU");
-                    int j = m-1;
-                    int i = n+1;
-                    while ((j >-1) && (i <=7) ) {
+                    int j = m - 1;
+                    int i = n + 1;
+                    while ((j > -1) && (i <= 7)) {
 
 
                         if (this.bolvanchikArrayBoard[i][j] == 1) {
@@ -564,9 +574,9 @@ class ArrayBoard {
                 }
                 if (sideLU == -1) {                                                             //LEFT_UP
                     System.out.print("LULULULULULULULULULULULULULULU");
-                    int j = m+1;
-                    int i = n+1;
-                    while ((j <=7) && (i <=7) ) {
+                    int j = m + 1;
+                    int i = n + 1;
+                    while ((j <= 7) && (i <= 7)) {
 
 
                         if (this.bolvanchikArrayBoard[i][j] == 1) {
@@ -584,9 +594,9 @@ class ArrayBoard {
                 }
                 if (sideDL == -1) {                                                             //down-left
                     System.out.print("DLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDL");
-                    int j = m+1;
-                    int i = n-1;
-                    while ((j <=7) && (i >-1) ) {
+                    int j = m + 1;
+                    int i = n - 1;
+                    while ((j <= 7) && (i > -1)) {
 
 
                         if (this.bolvanchikArrayBoard[i][j] == 1) {
@@ -604,7 +614,7 @@ class ArrayBoard {
                 }
 
                 int sumSide;
-                sumSide = sideDOWN + sideLEFT + sideUP + sideRIGH + sideUR+sideRD+sideDL+sideLU;
+                sumSide = sideDOWN + sideLEFT + sideUP + sideRIGH + sideUR + sideRD + sideDL + sideLU;
                 if (sumSide < 0) {
                     File file3 = new File("TimeSecond.txt");
 
@@ -626,44 +636,48 @@ class ArrayBoard {
 
 
             } else {                                                                                 //black
-                if (m - 1 >= 0) {
+                if (m - 1 > 1) {
                     if (this.bolvanchikArrayBoard[n][m - 1] == -1) {                                          //Right
-                        for (int i = m - 1; i >-1; i--) {
+                        for (int i = m - 1; i > -1; i--) {
                             if (this.bolvanchikArrayBoard[n][i] == 1) sideRIGH = 1;
                             if (this.bolvanchikArrayBoard[n][i] == 9) break;
                         }
                     }
                 }
-                if (n + 1 <= 7) {
-                    if (this.bolvanchikArrayBoard[n + 1][m] == -1) {                                       //UP
-                        for (int i = n + 1; i <=7; i++) {
-                            if (this.bolvanchikArrayBoard[i][m] == 1) sideUP = 1;
-                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
-                        }
-                    }
-                }
-                if (m + 1 <= 7) {
-                    if (this.bolvanchikArrayBoard[n][m + 1] == -1) {                                          //LEFT
-                        for (int i = m + 1; i <=7; i++) {
-                            if (this.bolvanchikArrayBoard[n][i] == 1) sideLEFT = 1;
-                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
-                        }
-                    }
-                }
-                if (n - 1 >= 0) {
+                if (n - 1 > -1) {
                     if (this.bolvanchikArrayBoard[n - 1][m] == -1) {                                       //DOWN
-                        for (int i = n - 1;  i >-1; i--) {
+                        for (int i = n - 1; i > -1; i--) {
                             if (this.bolvanchikArrayBoard[i][m] == 1) sideDOWN = 1;
                             if (this.bolvanchikArrayBoard[i][m] == 9) break;
 
                         }
                     }
                 }
-                if ((m - 1 >= 0) && (n + 1 <= 7)) {                                          // UP-RIGHT
-                    if (this.bolvanchikArrayBoard[n+ 1][m - 1] == -1) {
+                if (n + 1 < 8) {
+                    if (this.bolvanchikArrayBoard[n + 1][m] == -1) {                                       //UP
+                        for (int i = n + 1; i < 8; i++) {
+                            if (this.bolvanchikArrayBoard[i][m] == 1) sideUP = 1;
+                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
+                        }
+                    }
+
+                }
+                if (m + 1 < 8) {
+                    if (this.bolvanchikArrayBoard[n][m + 1] == -1) {                                          //LEFT
+                        for (int i = m + 1; i <= 7; i++) {
+                            if (this.bolvanchikArrayBoard[n][i] == 1) sideLEFT = 1;
+                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
+                        }
+                    }
+                }
+
+                if ((m - 1 > 0) && (n + 1 < 7)) {                                          // UP-RIGHT
+                    System.out.print("WORK UR!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n + 1][m - 1] == -1) {
                         int i = n + 1;
                         int j = m - 1;
-                        while ((i <= 7) && (j>= 0)) {
+
+                        while ((i <= 7) && (j >= 0)) {
                             if (this.bolvanchikArrayBoard[i][j] == 1) sideUR = 1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i++;
@@ -672,11 +686,12 @@ class ArrayBoard {
                         }
                     }
                 }
-                if ((m + 1 <= 7) && (n + 1 <= 7)) {                                          // LEFT_UP
-                    if (this.bolvanchikArrayBoard[n+ 1][m + 1] == -1) {
+                if ((m + 1 < 7) && (n + 1 < 7)) {                                          // LEFT_UP
+                    System.out.print("WORK LU!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n + 1][m + 1] == -1) {
                         int i = n + 1;
                         int j = m + 1;
-                        while ((i <= 7) && (j<=7)) {
+                        while ((i <= 7) && (j <= 7)) {
                             if (this.bolvanchikArrayBoard[i][j] == 1) sideLU = 1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i++;
@@ -685,11 +700,12 @@ class ArrayBoard {
                         }
                     }
                 }
-                if ((m + 1 <= 7) && (n- 1 >= 0 )) {                                          // Down-left
-                    if (this.bolvanchikArrayBoard[n- 1][m+ 1] == -1) {
+                if ((m + 1 < 7) && (n - 1 > 0)) {                                          // Down-left
+                    System.out.print("WORK DL!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n - 1][m + 1] == -1) {
                         int i = n - 1;
                         int j = m + 1;
-                        while ((i >= 0) && (j<= 7)) {
+                        while ((i >= 0) && (j <= 7)) {
                             if (this.bolvanchikArrayBoard[i][j] == 1) sideDL = 1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i--;
@@ -698,11 +714,12 @@ class ArrayBoard {
                         }
                     }
                 }
-                if ((m + 1 <= 7) && (n + 1 <= 7)) {                                          // RIGHT-Down
-                    if (this.bolvanchikArrayBoard[n- 1][m - 1] == -1) {
+                if ((m -1 > -1 ) && (n -1 > -1 )) {                                          // RIGHT-Down
+                    System.out.print("WORK RD!!!!!!!!!!!!!!!!!");
+                    if (this.bolvanchikArrayBoard[n - 1][m - 1] == -1) {
                         int i = n - 1;
                         int j = m - 1;
-                        while ((i <= 7) && (j <= 7)) {
+                        while ((i >= 0) && (j >= 0)) {
                             if (this.bolvanchikArrayBoard[i][j] == 1) sideRD = 1;
                             if (this.bolvanchikArrayBoard[i][j] == 9) break;
                             i--;
@@ -711,6 +728,7 @@ class ArrayBoard {
                         }
                     }
                 }
+
                 if (sideRIGH == 1) {                                                               //Right
                     for (int i = m; i > -1; i--) {
                         if (this.bolvanchikArrayBoard[n][i] == -1) {
@@ -723,7 +741,7 @@ class ArrayBoard {
                     }
                 }
                 if (sideUP == 1) {                                                               //UP
-                    for (int i = n; i <= 7; i++) {
+                    for (int i = n; i <8; i++) {
                         if (this.bolvanchikArrayBoard[i][m] == -1) {
                             this.bolvanchikArrayBoard[i][m] = 1;
                             continue;
@@ -733,7 +751,7 @@ class ArrayBoard {
                     }
                 }
                 if (sideLEFT == 1) {                                                               //Left
-                    for (int i = m; i < 7; i++) {
+                    for (int i = m; i < 8; i++) {
                         if (this.bolvanchikArrayBoard[n][i] == -1) {
                             this.bolvanchikArrayBoard[n][i] = 1;
                             this.bolvanchikArrayBoard[n][m] = 1;
@@ -756,9 +774,9 @@ class ArrayBoard {
                 }
                 if (sideRD == 1) {                                                             //RIGHT-Down
                     System.out.print("RDRDRDRDRDRDRDRDRDRDRDRDRDRDRDRD");
-                    int j = m-1;
-                    int i = n-1;
-                    while ((j >-1) && (i >-1) ) {
+                    int j = m - 1;
+                    int i = n - 1;
+                    while ((j > -1) && (i > -1)) {
 
                         if (this.bolvanchikArrayBoard[i][j] == -1) {
                             this.bolvanchikArrayBoard[i][j] = 1;
@@ -775,9 +793,9 @@ class ArrayBoard {
                 }
                 if (sideUR == 1) {                                                             //UP-Right
                     System.out.print("UPUPUPUPUPUPUPUPUUPUPUPUPUPUPU");
-                    int j = m-1;
-                    int i = n+1;
-                    while ((j >-1) && (i <=7) ) {
+                    int j = m - 1;
+                    int i = n + 1;
+                    while ((j > -1) && (i <= 7)) {
 
 
                         if (this.bolvanchikArrayBoard[i][j] == -1) {
@@ -795,9 +813,9 @@ class ArrayBoard {
                 }
                 if (sideLU == 1) {                                                             //LEFT_UP
                     System.out.print("LULULULULULULULULULULULULULULU");
-                    int j = m+1;
-                    int i = n+1;
-                    while ((j <=7) && (i <=7) ) {
+                    int j = m + 1;
+                    int i = n + 1;
+                    while ((j <= 7) && (i <= 7)) {
 
 
                         if (this.bolvanchikArrayBoard[i][j] == -1) {
@@ -815,9 +833,9 @@ class ArrayBoard {
                 }
                 if (sideDL == 1) {                                                             //down-left
                     System.out.print("DLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDL");
-                    int j = m+1;
-                    int i = n-1;
-                    while ((j <=7) && (i >-1) ) {
+                    int j = m + 1;
+                    int i = n - 1;
+                    while ((j <= 7) && (i > -1)) {
 
 
                         if (this.bolvanchikArrayBoard[i][j] == -1) {
@@ -835,14 +853,8 @@ class ArrayBoard {
                 }
 
 
-
-
-
-
-
-
                 int sumSide;
-                sumSide = sideDOWN + sideLEFT + sideUP + sideRIGH + sideUR+sideRD+sideDL+sideLU;
+                sumSide = sideDOWN + sideLEFT + sideUP + sideRIGH + sideUR + sideRD + sideDL + sideLU;
 
 
                 if (sumSide > 0) {
@@ -931,7 +943,7 @@ class Board {
                     bottonTime.setIcon(blackWayICON);
                 }
                 if (bolvanchikBoard[i][j] == 9) {
-                    bottonTime.setIcon(noWayICON);
+                    //  bottonTime.setIcon(noWayICON);
                 }
                 panelBoard.add(bottonTime);
             }
