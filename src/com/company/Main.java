@@ -165,12 +165,7 @@ class StartWind {
         public void actionPerformed(ActionEvent e) {            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             mainWinJF.getContentPane().removeAll();
-            for (int i = 0; i < secondArrayBoard.bolvanchikArrayBoard.length; i++) {
-                System.out.print("\n");
-                for (int j = 0; j < secondArrayBoard.bolvanchikArrayBoard[i].length; j++) {
-                    System.out.print(secondArrayBoard.bolvanchikArrayBoard[i][j] + "=");
-                }
-            }
+
 
 
             Integer[][] arrBig = new Integer[8][8];                     // поиск обновленного массива чисел
@@ -253,25 +248,8 @@ class StartWind {
             }
 
 
-            System.out.print(arr[0][0] + "\n");
-            System.out.print(arr[0][1] + "\n");
-            System.out.print(arr[4][3] + "\n");
-            System.out.print(arr[7][7] + "\n");
-            System.out.print(arr[4][4] + "\n");
-            System.out.print(arr[0][7] + "\n");
-            System.out.print(arr[7][0] + "\n");
 
 
-
-
- /*                      int[][] arr = new int[8][8];
-            try {
-                arr = Files.lines(Paths.get("ArrayBoard.txt"))
-                        .map(item -> item.chars().filter(i -> (char) i != ' ').map(Character::getNumericValue).toArray())
-                        .toArray(int[][]::new);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }      */
 
             for (int i = 0; i < arr.length; i++) {
                 if (i == 0) System.out.print("\n");
@@ -293,7 +271,7 @@ class StartWind {
             //FINISH!
 
 
-            String[] timeInString;                      // определение нажатой кнопки
+            String[] timeInString;                                             // определение нажатой кнопки
             TimeNumber bolvanchikTN = new TimeNumber();
             bolvanchikTN.TestString(e.getActionCommand());
             timeInString = bolvanchikTN.ReplaceToArray();
@@ -303,7 +281,7 @@ class StartWind {
             System.out.print("___" + tIS1 + "___" + tIS2 + "___" + "\n");
 
 
-            secondArrayBoard.ReplaceToNew(arr);                                     // клик обработка
+            secondArrayBoard.ReplaceToNew(arr);                                                 // клик обработка
             String whiteOrBlack = null;
 
             try {
@@ -322,12 +300,8 @@ class StartWind {
             Board newTimeBoard = new Board();
             newTimeBoard.Board(newTimeArrayBoard);
 
-            for (int i = 0; i < secondArrayBoard.bolvanchikArrayBoard.length; i++) {
-                System.out.print("\n");
-                for (int j = 0; j < secondArrayBoard.bolvanchikArrayBoard[i].length; j++) {
-                    System.out.print(secondArrayBoard.bolvanchikArrayBoard[i][j] + "_");
-                }
-            }
+
+
             File file2 = new File("ArrayBoard.txt");
             try {
                 if (!file2.exists()) {
@@ -367,7 +341,6 @@ class ArrayBoard {
     int sideDL = 0;
     int sideRD = 0;
     int sideLU = 0;
-
     public void TestUP(int m, int n) {
 
         if (this.bolvanchikArrayBoard[n + 1][m] == 1) {
@@ -386,9 +359,6 @@ class ArrayBoard {
             }
         }
     }
-
-
-
     void NewClick(int m, int n, String blackOrWhite) {
 
         if (this.bolvanchikArrayBoard[n][m] == 9) {                                              // ч или б ход

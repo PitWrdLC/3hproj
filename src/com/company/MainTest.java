@@ -17,25 +17,28 @@ public class MainTest {
         ArrayBoard firstTestAB = new ArrayBoard();
         firstTestAB.NGBoard();
 
-        int time;
-        time = firstTestAB.bolvanchikArrayBoard[1][2];
-        Assert.assertEquals(9 ,time);
-        time =firstTestAB.bolvanchikArrayBoard[5][7];
-          Assert.assertEquals(9 ,time);
-        time =firstTestAB.bolvanchikArrayBoard[4][2];
-        Assert.assertEquals(9 ,time);
-        time =firstTestAB.bolvanchikArrayBoard[1][6];
-        Assert.assertEquals(9 ,time);
-        time =firstTestAB.bolvanchikArrayBoard[3][4];
-        Assert.assertEquals(1 ,time );
-        time =firstTestAB.bolvanchikArrayBoard[4][3];
-        Assert.assertEquals(1,time );
-        time =firstTestAB.bolvanchikArrayBoard[4][4];
-        Assert.assertEquals(-1,time );
-        time =firstTestAB.bolvanchikArrayBoard[3][3];
-        Assert.assertEquals(-1 ,time );
+        int timeB;
+        timeB = firstTestAB.bolvanchikArrayBoard[1][2];
+        Assert.assertEquals(9 ,timeB);
+        timeB =firstTestAB.bolvanchikArrayBoard[5][7];
+          Assert.assertEquals(9 ,timeB);
+        timeB =firstTestAB.bolvanchikArrayBoard[4][2];
+        Assert.assertEquals(9 ,timeB);
+        timeB =firstTestAB.bolvanchikArrayBoard[1][6];
+        Assert.assertEquals(9 ,timeB);
+        timeB =firstTestAB.bolvanchikArrayBoard[3][4];
+        Assert.assertEquals(1 ,timeB );
+        timeB =firstTestAB.bolvanchikArrayBoard[4][3];
+        Assert.assertEquals(1,timeB );
+        timeB =firstTestAB.bolvanchikArrayBoard[4][4];
+        Assert.assertEquals(-1,timeB );
+        timeB =firstTestAB.bolvanchikArrayBoard[3][3];
+        Assert.assertEquals(-1 ,timeB );
 
 
+        ArrayBoard secondArrayBoard = new ArrayBoard();
+        secondArrayBoard.NGBoard();
+        secondArrayBoard.NewClick(2, 4, "-1");
 
 
 
