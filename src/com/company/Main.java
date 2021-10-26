@@ -357,7 +357,6 @@ class StartWind {
         }
     }
 }
-
 class ArrayBoard {
     Integer[][] bolvanchikArrayBoard = new Integer[8][8];
     int sideUP = 0;
@@ -369,15 +368,6 @@ class ArrayBoard {
     int sideRD = 0;
     int sideLU = 0;
 
-    void ReplaceToNew(int[][] time) {
-        for (int i = 0; i < time.length; i++) {
-
-            for (int j = 0; j < time[i].length; j++) {
-                this.bolvanchikArrayBoard[i][j] = time[i][j];
-            }
-        }
-    }
-
     public void TestUP(int m, int n) {
 
         if (this.bolvanchikArrayBoard[n + 1][m] == 1) {
@@ -388,6 +378,16 @@ class ArrayBoard {
             }
         }
     }
+    void ReplaceToNew(int[][] time) {
+        for (int i = 0; i < time.length; i++) {
+
+            for (int j = 0; j < time[i].length; j++) {
+                this.bolvanchikArrayBoard[i][j] = time[i][j];
+            }
+        }
+    }
+
+
 
     void NewClick(int m, int n, String blackOrWhite) {
 
