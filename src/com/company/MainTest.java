@@ -38,7 +38,7 @@ public class MainTest {
 
         ArrayBoard secondArrayBoard = new ArrayBoard();
         secondArrayBoard.NGBoard();
-        secondArrayBoard.NewClick(2, 4, "-1");
+      // secondArrayBoard.NewClick(2, 4, "-1");
 
 
 

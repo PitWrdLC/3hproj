@@ -15,19 +15,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.UnresolvedPermission;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 import javax.swing.JButton;
-
-import static javax.swing.JLayeredPane.DRAG_LAYER;
-import static javax.swing.JLayeredPane.LAYER_PROPERTY;
 
 
 public class Main extends JFrame {
@@ -39,31 +33,23 @@ public class Main extends JFrame {
 }
 
 class StartWind {
-    List<Component> compList = new ArrayList<Component>();
     File file1 = new File("ArrayBoard.txt");
     File file2 = new File("TimeSecond.txt");
-    String whiteWay = "WhitePoint.png";
-    String blackWay = "BlackPoint.png";
-    Icon whiteWayICON = new ImageIcon(whiteWay);
-    Icon blackWayICON = new ImageIcon(blackWay);
+    File file3 = new File("ClickWayOrEat.txt");
+
     ArrayBoard firstArrayBoard = new ArrayBoard();
-    static int firstreplace = 1;
-    static Integer[][] standartBoard = new Integer[8][8];
-    Integer[][] bolvanchikBoard = standartBoard;
     public JPanel firstPanel;
     static JFrame mainWinJF = new JFrame();
-    static Integer timerSecond = 1;
 
     public void StartWind() {
         firstArrayBoard.NGBoard();
-        mainWinJF.setTitle("REVERSI 3.0.1 ");
+        mainWinJF.setTitle("REVERSI 3.0.5 ");
         mainWinJF.setSize(new Dimension(400, 600));
-        mainWinJF.setLocation(900, 100);
+        mainWinJF.setLocation(1320, 100);
         mainWinJF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWinJF.setSize(550, 550);
         Board replaceBoard = new Board();
         firstPanel = replaceBoard.Board(firstArrayBoard.bolvanchikArrayBoard);
-        JLayeredPane jLayersfSP = new JLayeredPane();
         mainWinJF.add(firstPanel);
         try {
             if (!file1.exists()) {
@@ -87,6 +73,22 @@ class StartWind {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        try {
+            if (!file3.exists()) {
+                file3.createNewFile();
+            }
+            PrintWriter out = new PrintWriter(file3.getAbsoluteFile());
+            try {
+                out.print("Line");
+            } finally {
+                out.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         try {
             if (!file2.exists()) {
                 file2.createNewFile();
@@ -103,43 +105,35 @@ class StartWind {
         JMenuBar mainWindMB = new JMenuBar();
 
         JMenu menu1 = new JMenu("File");
-        JMenu menu2 = new JMenu("New game");
-        JMenu menu3 = new JMenu("Restart");
         JMenu menu4 = new JMenu("Exit");
 
-        JMenuItem menuItem1Load = new JMenuItem("Load(Beta)");
-        JMenuItem menuItem1Save = new JMenuItem("Save(Beta)");
-        JMenuItem menuItem1TestRead = new JMenuItem("TestRead");
-        JMenuItem menuItem1Manual = new JMenuItem("Manual(beta)");
-        JMenuItem menuItem1New = new JMenuItem("New Game");
-        JMenuItem menuItem1Close = new JMenuItem("Close");                 //!
-        JMenuItem menuItem2Standart = new JMenuItem("Standart Game");
-        JMenuItem menuItem2Custome = new JMenuItem("Custom Game(beta)");
-        JMenuItem menuItem3Close = new JMenuItem("Restart");
-        JMenuItem menuItem4Exit = new JMenuItem("Exit");                   //!
-        menu1.add(menuItem1Load);
-        menu1.add(menuItem1Save);
-        menu1.add(menuItem1TestRead);
+        JMenuItem menuItem1Manual = new JMenuItem("Manual");
+        JMenuItem menuItem1New = new JMenuItem("New Game(beta)");
+        JMenuItem menuItem1Close = new JMenuItem("Close");
+        JMenuItem menuItem4Exit = new JMenuItem("Exit");                                //!
         menu1.add(menuItem1Manual);
         menu1.add(menuItem1New);
         menu1.add(menuItem1Close);
-        menu2.add(menuItem2Standart);
-        menu2.add(menuItem2Custome);
-        menu3.add(menuItem3Close);
         menu4.add(menuItem4Exit);
 
         mainWindMB.add(menu1);
-        mainWindMB.add(menu2);
-        mainWindMB.add(menu3);
         mainWindMB.add(menu4);
 
         mainWinJF.setJMenuBar(mainWindMB);
         mainWinJF.setVisible(true);
 
-        menuItem1New.addActionListener(new ActionListener() {
+
+        menuItem1Manual.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String urlString = "https://ru.wikipedia.org/wiki/%D0%A0%D0%B5%D0%B2%D0%B5%D1%80%D1%81%D0%B8";
+                try {
+                    Desktop.getDesktop().browse(new URL(urlString).toURI());
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                } catch (URISyntaxException uriSyntaxException) {
+                    uriSyntaxException.printStackTrace();
+                }
             }
         });
         menuItem1Close.addActionListener(new ActionListener() {
@@ -154,21 +148,16 @@ class StartWind {
                 System.exit(0);
             }
         });
-
-
     }
 
-    static class ListenerAction implements ActionListener {
+    static class ListenerAction implements ActionListener {                                             //!!!!!!!!!!
         private final ArrayBoard secondArrayBoard = new ArrayBoard();
         JPanel secondPanel;
 
-        public void actionPerformed(ActionEvent e) {            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+        public void actionPerformed(ActionEvent e) {
             mainWinJF.getContentPane().removeAll();
-
-
-
-            Integer[][] arrBig = new Integer[8][8];                     // поиск обновленного массива чисел
+            Integer[][] arrBig = new Integer[8][8];                                                     // поиск обновленного массива чисел
+            String[] timeLineArray = new String[]{null, null, null, null, null, null, null, null};
             Integer timeLine = 0;
             String line1 = null;
             String line2 = null;
@@ -195,112 +184,121 @@ class StartWind {
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
             }
-            System.out.print("\n" + line1 + " 1111111111 " + "\n");
-            System.out.print(line2 + " 2222222222 " + "\n");
-            System.out.print(line3 + " 3333333333 " + "\n");
-            System.out.print(line4 + " 4444444444 " + "\n");
-            System.out.print(line5 + " 5555555555 " + "\n");
-            System.out.print(line6 + " 6666666666 " + "\n");
-            System.out.print(line7 + " 7777777777 " + "\n");
-            System.out.print(line8 + " 8888888888 " + "\n");
             int[][] arr = new int[8][8];
             for (int ik = 0; ik <= 7; ik++) {
                 if (ik == 0) {
                     String[] time = line1.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 1) {
                     String[] time = line2.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 2) {
                     String[] time = line3.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 3) {
                     String[] time = line4.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 4) {
                     String[] time = line5.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 5) {
                     String[] time = line6.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 6) {
                     String[] time = line7.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
                 if (ik == 7) {
                     String[] time = line8.split(" ");
                     for (int it = 0; it < time.length; it++) arr[ik][it] = Integer.parseInt(time[it]);
-
                 }
             }
-
-
-
-
-
             for (int i = 0; i < arr.length; i++) {
                 if (i == 0) System.out.print("\n");
                 System.out.print("");
                 for (int j = 0; j < arr[i].length; j++) {
-
                 }
-
             }
-
-
             for (int i = 0; i < arr.length; i++) {
-
                 for (int j = 0; j < arr[i].length; j++) {
                     arrBig[i][j] = arr[i][j];
                 }
-
-            }
-            //FINISH!
-
+            }                                                                                          //FINISH!
 
             String[] timeInString;                                             // определение нажатой кнопки
             TimeNumber bolvanchikTN = new TimeNumber();
             bolvanchikTN.TestString(e.getActionCommand());
+            File file3 = new File("ClickWayOrEat.txt");
+
             timeInString = bolvanchikTN.ReplaceToArray();
 
             int tIS1 = Integer.parseInt(timeInString[0]);
             int tIS2 = Integer.parseInt(timeInString[1]);
-            System.out.print("___" + tIS1 + "___" + tIS2 + "___" + "\n");
 
-
-            secondArrayBoard.ReplaceToNew(arr);                                                 // клик обработка
+            secondArrayBoard.ReplaceToNew(arr);                                                         // клик обработка
             String whiteOrBlack = null;
-
             try {
-                Scanner timesc = new Scanner(new File("TimeSecond.txt"));
-                whiteOrBlack = timesc.next();
+                Scanner timescTS = new Scanner(new File("TimeSecond.txt"));
+                whiteOrBlack = timescTS.next();
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
             }
 
 
-            secondArrayBoard.NewClick(tIS2, tIS1, whiteOrBlack);
-            Board replaceBoard = new Board();
-            secondPanel = replaceBoard.Board(secondArrayBoard.bolvanchikArrayBoard);
+            String newClickWay = "";                                                                              // ход или поиск пути
+            String timeNewClick = "";
+            boolean canClick = false;
+
+            try {
+                Scanner timescCW = new Scanner(new File("ClickWayOrEat.txt"));
+                timeNewClick = timescCW.next();
+                if (timeNewClick.equals("") || timeNewClick.equals("Line")) {
+                    newClickWay = secondArrayBoard.NewClickWay(tIS2, tIS1, whiteOrBlack);                   //смотрю можно ли ходить если да --- 01010100010!!!44 если нет ---- лайн
+
+                } else {
+                    String[] arrayTimeNewClick = timeNewClick.split("");                                // сли нажал и проверяю возможность хода
+                    for (int i = 0; i < arrayTimeNewClick.length; i++) {
+                        if (arrayTimeNewClick[i].equals("!")) break;
+                        if (arrayTimeNewClick[i].equals("0")) {
+                            canClick = true;
+                        }
+
+                    }
+                    if (canClick == true) {
+                        secondArrayBoard.ThisClickWay(tIS2, tIS1, whiteOrBlack);
+
+                    } else {
+                        PrintWriter out = null;
+                        try {
+                            out = new PrintWriter(file3.getAbsoluteFile());
+                        } catch (FileNotFoundException fileNotFoundException) {
+                            fileNotFoundException.printStackTrace();
+                        }
+                        try {
+                            System.out.println("\n ошибочка \n");
+                            out.print("Line");
+                        } finally {
+                            out.close();
+                        }
+                    }
+                }
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            }
+
+
+            Board replaceBoardAfterClick = new Board();
+            secondPanel = replaceBoardAfterClick.Board(secondArrayBoard.bolvanchikArrayBoard);
 
             Integer[][] newTimeArrayBoard = secondArrayBoard.bolvanchikArrayBoard;
             Board newTimeBoard = new Board();
             newTimeBoard.Board(newTimeArrayBoard);
-
-
 
             File file2 = new File("ArrayBoard.txt");
             try {
@@ -331,26 +329,11 @@ class StartWind {
         }
     }
 }
+
 class ArrayBoard {
     Integer[][] bolvanchikArrayBoard = new Integer[8][8];
-    int sideUP = 0;
-    int sideLEFT = 0;
-    int sideRIGH = 0;
-    int sideDOWN = 0;
-    int sideUR = 0;
-    int sideDL = 0;
-    int sideRD = 0;
-    int sideLU = 0;
-    public void TestUP(int m, int n) {
+    File file3 = new File("ClickWayOrEat.txt");
 
-        if (this.bolvanchikArrayBoard[n + 1][m] == 1) {
-            for (int i = n + 1; i < bolvanchikArrayBoard[n].length; i++) {
-                System.out.print(n);
-            }
-            if (this.bolvanchikArrayBoard[n + 2][m] == -1) {
-            }
-        }
-    }
     void ReplaceToNew(int[][] time) {
         for (int i = 0; i < time.length; i++) {
 
@@ -359,494 +342,544 @@ class ArrayBoard {
             }
         }
     }
-    void NewClick(int m, int n, String blackOrWhite) {
 
-        if (this.bolvanchikArrayBoard[n][m] == 9) {                                              // ч или б ход
+    void ThisClickWay(int firstM, int firstN, String blackOrWhite) throws FileNotFoundException {
 
-
-            if (blackOrWhite.equals("-1")) {                                                     // white
-
-                if (m - 1 > -1) {
-                    if (this.bolvanchikArrayBoard[n][m - 1] == 1) {                                          //Right
-                        for (int i = m - 1; i > -1; i--) {
-                            if (this.bolvanchikArrayBoard[n][i] == -1) sideRIGH = -1;
-                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
+        String scanFile = new Scanner(new File("ClickWayOrEat.txt")).next();
+        String secondN = Character.toString(scanFile.charAt(11));
+        String secondM = Character.toString(scanFile.charAt(12));
+        boolean writeWhiteOrBlack = false;
+        int mainBlackOrWhite = 1;
+        int testBlackOrWhite = -1;
+        if (blackOrWhite.equals("-1")) {            // white
+            mainBlackOrWhite = -1;
+            testBlackOrWhite = 1;
+            writeWhiteOrBlack = true;
+        }
+        boolean timeBoo = false;
+        if (firstM - 1 > -1) {
+            if (this.bolvanchikArrayBoard[firstN][firstM - 1] == testBlackOrWhite) {
+                for (int j = firstM - 1; j > -1; j--) {
+                    if ((this.bolvanchikArrayBoard[firstN][j] == mainBlackOrWhite)) {
+                        String strM = Integer.toString(j);
+                        String strN = Integer.toString(firstN);
+                        if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                            timeBoo = true;
+                            this.bolvanchikArrayBoard[firstN][j] = mainBlackOrWhite;              // исходное
+                            this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;             //  последнее
+                            for (int m = j; 8 > m; m++) {
+                                this.bolvanchikArrayBoard[firstN][m] = mainBlackOrWhite;
+                                if (m == firstM) break;
+                            }
                         }
                     }
+                    if (this.bolvanchikArrayBoard[firstN][j] == 9) break;
                 }
-                if (n - 1 > -1) {
-                    if (this.bolvanchikArrayBoard[n - 1][m] == 1) {                                       //DOWN
-                        for (int i = n - 1; i > -1; i--) {
-                            if (this.bolvanchikArrayBoard[i][m] == -1) sideDOWN = -1;
-                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
-
+            }
+        }
+        if (firstM + 1 < 8) {                                                                             //Left
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN][firstM + 1] == testBlackOrWhite) {
+                    for (int j = firstM + 1; j < 8; j++) {
+                        if ((this.bolvanchikArrayBoard[firstN][j] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(j);
+                            String strN = Integer.toString(firstN);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[firstN][j] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;                           //  последнее
+                                for (int m = j; m > -1; m--) {
+                                    this.bolvanchikArrayBoard[firstN][m] = mainBlackOrWhite;
+                                    if (m == firstM) break;
+                                }
+                            }
                         }
-                    }
-                }
-                if (n + 1 < 8) {
-                    if (this.bolvanchikArrayBoard[n + 1][m] == 1) {                                       //UP
-                        for (int i = n + 1; i < 8; i++) {
-                            if (this.bolvanchikArrayBoard[i][m] == -1) sideUP = -1;
-                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
-                        }
-                    }
-
-                }
-                if (m + 1 < 8) {
-                    if (this.bolvanchikArrayBoard[n][m + 1] == 1) {                                          //LEFT
-                        for (int i = m + 1; i < 8; i++) {
-                            if (this.bolvanchikArrayBoard[n][i] == -1) sideLEFT = -1;
-                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
-                        }
-                    }
-                }
-
-                if ((m - 1 > 0) && (n + 1 < 7)) {                                          // UP-RIGHT
-                    System.out.print("WORK UR!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n + 1][m - 1] == 1) {
-                        int i = n + 1;
-                        int j = m - 1;
-
-                        while ((i <= 7) && (j >= 0)) {
-                            if (this.bolvanchikArrayBoard[i][j] == -1) sideUR = -1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i++;
-                            j--;
-
-                        }
-                    }
-                }
-                if ((m + 1 < 7) && (n + 1 < 7)) {                                          // LEFT_UP
-                    System.out.print("WORK LU!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n + 1][m + 1] == 1) {
-                        int i = n + 1;
-                        int j = m + 1;
-                        while ((i <= 7) && (j <= 7)) {
-                            if (this.bolvanchikArrayBoard[i][j] == -1) sideLU = -1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i++;
-                            j++;
-
-                        }
-                    }
-                }
-                if ((m + 1 < 7) && (n - 1 > 0)) {                                          // Down-left
-                    System.out.print("WORK DL!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n - 1][m + 1] == 1) {
-                        int i = n - 1;
-                        int j = m + 1;
-                        while ((i >= 0) && (j <= 7)) {
-                            if (this.bolvanchikArrayBoard[i][j] == -1) sideDL = -1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i--;
-                            j++;
-
-                        }
-                    }
-                }
-                if ((m -1 > -1 ) && (n -1 > -1 )) {                                          // RIGHT-Down
-                    System.out.print("WORK RD!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n - 1][m - 1] == 1) {
-                        int i = n - 1;
-                        int j = m - 1;
-                        while ((i >= 0) && (j >= 0)) {
-                            if (this.bolvanchikArrayBoard[i][j] == -1) sideRD = -1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i--;
-                            j--;
-
-                        }
-                    }
-                }
-                if (sideRIGH == -1) {                                                               //Right
-                    for (int i = m; i > -1; i--) {
-                        if (this.bolvanchikArrayBoard[n][i] == 1) {
-                            this.bolvanchikArrayBoard[n][i] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[n][i] == -1) break;
-
-                    }
-                }
-                if (sideUP == -1) {                                                               //UP
-                    for (int i = n + 1; i < 8; i++) {
-                        if (this.bolvanchikArrayBoard[i][m] == 1) {
-                            this.bolvanchikArrayBoard[i][m] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                            continue;
-
-                        }
-                        if (this.bolvanchikArrayBoard[i][m] == -1) break;
-                        if (i == 7) break;
-                    }
-                }
-                if (sideLEFT == -1) {                                                               //Left
-                    for (int i = m; i < 8; i++) {
-                        if (this.bolvanchikArrayBoard[n][i] == 1) {
-                            this.bolvanchikArrayBoard[n][i] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[n][i] == -1) break;
-
-                    }
-                }
-                if (sideDOWN == -1) {                                                               //DOWN
-                    for (int i = n - 1; i > -1; i--) {
-                        if (this.bolvanchikArrayBoard[i][m] == 1) {
-                            this.bolvanchikArrayBoard[i][m] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[i][m] == -1) break;
-
-                    }
-                }
-                if (sideRD == -1) {                                                             //RIGHT-Down
-                    System.out.print("RDRDRDRDRDRDRDRDRDRDRDRDRDRDRDRD");
-                    int j = m - 1;
-                    int i = n - 1;
-                    while ((j > -1) && (i > -1)) {
-
-                        if (this.bolvanchikArrayBoard[i][j] == 1) {
-                            this.bolvanchikArrayBoard[i][j] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                        }
-                        j--;
-                        i--;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == -1) break;
-                    }
-                }
-                if (sideUR == -1) {                                                             //UP-Right
-                    System.out.print("UPUPUPUPUPUPUPUPUUPUPUPUPUPUPU");
-                    int j = m - 1;
-                    int i = n + 1;
-                    while ((j > -1) && (i <= 7)) {
-
-
-                        if (this.bolvanchikArrayBoard[i][j] == 1) {
-                            this.bolvanchikArrayBoard[i][j] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                        }
-                        j--;
-                        i++;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == -1) break;
-                    }
-                }
-                if (sideLU == -1) {                                                             //LEFT_UP
-                    System.out.print("LULULULULULULULULULULULULULULU");
-                    int j = m + 1;
-                    int i = n + 1;
-                    while ((j <= 7) && (i <= 7)) {
-
-
-                        if (this.bolvanchikArrayBoard[i][j] == 1) {
-                            this.bolvanchikArrayBoard[i][j] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                        }
-                        j--;
-                        i++;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == -1) break;
-                    }
-                }
-                if (sideDL == -1) {                                                             //down-left
-                    System.out.print("DLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDL");
-                    int j = m + 1;
-                    int i = n - 1;
-                    while ((j <= 7) && (i > -1)) {
-
-
-                        if (this.bolvanchikArrayBoard[i][j] == 1) {
-                            this.bolvanchikArrayBoard[i][j] = -1;
-                            this.bolvanchikArrayBoard[n][m] = -1;
-                        }
-                        j++;
-                        i--;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == -1) break;
-                    }
-                }
-
-                int sumSide;
-                sumSide = sideDOWN + sideLEFT + sideUP + sideRIGH + sideUR + sideRD + sideDL + sideLU;
-                if (sumSide < 0) {
-                    File file3 = new File("TimeSecond.txt");
-
-                    try {
-                        if (!file3.exists()) {
-                            file3.createNewFile();
-                        }
-                        PrintWriter out = new PrintWriter(file3.getAbsoluteFile());
-                        try {
-                            out.print("1");
-                        } finally {
-                            out.close();
-                        }
-                    } catch (IOException ecept) {
-                        throw new RuntimeException(ecept);
-                    }
-
-                }
-
-
-            } else {                                                                                 //black
-                if (m - 1 > 1) {
-                    if (this.bolvanchikArrayBoard[n][m - 1] == -1) {                                          //Right
-                        for (int i = m - 1; i > -1; i--) {
-                            if (this.bolvanchikArrayBoard[n][i] == 1) sideRIGH = 1;
-                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
-                        }
-                    }
-                }
-                if (n - 1 > -1) {
-                    if (this.bolvanchikArrayBoard[n - 1][m] == -1) {                                       //DOWN
-                        for (int i = n - 1; i > -1; i--) {
-                            if (this.bolvanchikArrayBoard[i][m] == 1) sideDOWN = 1;
-                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
-
-                        }
-                    }
-                }
-                if (n + 1 < 8) {
-                    if (this.bolvanchikArrayBoard[n + 1][m] == -1) {                                       //UP
-                        for (int i = n + 1; i < 8; i++) {
-                            if (this.bolvanchikArrayBoard[i][m] == 1) sideUP = 1;
-                            if (this.bolvanchikArrayBoard[i][m] == 9) break;
-                        }
-                    }
-
-                }
-                if (m + 1 < 8) {
-                    if (this.bolvanchikArrayBoard[n][m + 1] == -1) {                                          //LEFT
-                        for (int i = m + 1; i <= 7; i++) {
-                            if (this.bolvanchikArrayBoard[n][i] == 1) sideLEFT = 1;
-                            if (this.bolvanchikArrayBoard[n][i] == 9) break;
-                        }
-                    }
-                }
-
-                if ((m - 1 > 0) && (n + 1 < 7)) {                                          // UP-RIGHT
-                    System.out.print("WORK UR!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n + 1][m - 1] == -1) {
-                        int i = n + 1;
-                        int j = m - 1;
-
-                        while ((i <= 7) && (j >= 0)) {
-                            if (this.bolvanchikArrayBoard[i][j] == 1) sideUR = 1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i++;
-                            j--;
-
-                        }
-                    }
-                }
-                if ((m + 1 < 7) && (n + 1 < 7)) {                                          // LEFT_UP
-                    System.out.print("WORK LU!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n + 1][m + 1] == -1) {
-                        int i = n + 1;
-                        int j = m + 1;
-                        while ((i <= 7) && (j <= 7)) {
-                            if (this.bolvanchikArrayBoard[i][j] == 1) sideLU = 1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i++;
-                            j++;
-
-                        }
-                    }
-                }
-                if ((m + 1 < 7) && (n - 1 > 0)) {                                          // Down-left
-                    System.out.print("WORK DL!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n - 1][m + 1] == -1) {
-                        int i = n - 1;
-                        int j = m + 1;
-                        while ((i >= 0) && (j <= 7)) {
-                            if (this.bolvanchikArrayBoard[i][j] == 1) sideDL = 1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i--;
-                            j++;
-
-                        }
-                    }
-                }
-                if ((m -1 > -1 ) && (n -1 > -1 )) {                                          // RIGHT-Down
-                    System.out.print("WORK RD!!!!!!!!!!!!!!!!!");
-                    if (this.bolvanchikArrayBoard[n - 1][m - 1] == -1) {
-                        int i = n - 1;
-                        int j = m - 1;
-                        while ((i >= 0) && (j >= 0)) {
-                            if (this.bolvanchikArrayBoard[i][j] == 1) sideRD = 1;
-                            if (this.bolvanchikArrayBoard[i][j] == 9) break;
-                            i--;
-                            j--;
-
-                        }
-                    }
-                }
-
-                if (sideRIGH == 1) {                                                               //Right
-                    for (int i = m; i > -1; i--) {
-                        if (this.bolvanchikArrayBoard[n][i] == -1) {
-                            this.bolvanchikArrayBoard[n][i] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[n][i] == 1) break;
-
-                    }
-                }
-                if (sideUP == 1) {                                                               //UP
-                    for (int i = n; i <8; i++) {
-                        if (this.bolvanchikArrayBoard[i][m] == -1) {
-                            this.bolvanchikArrayBoard[i][m] = 1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[i][m] == 1) break;
-                        this.bolvanchikArrayBoard[n][m] = 1;
-                    }
-                }
-                if (sideLEFT == 1) {                                                               //Left
-                    for (int i = m; i < 8; i++) {
-                        if (this.bolvanchikArrayBoard[n][i] == -1) {
-                            this.bolvanchikArrayBoard[n][i] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[n][i] == 1) break;
-
-                    }
-                }
-                if (sideDOWN == 1) {                                                               //DOWN
-                    for (int i = n - 1; i > -1; i--) {
-                        if (this.bolvanchikArrayBoard[i][m] == -1) {
-                            this.bolvanchikArrayBoard[i][m] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                            continue;
-                        }
-                        if (this.bolvanchikArrayBoard[i][m] == 1) break;
-
-                    }
-                }
-                if (sideRD == 1) {                                                             //RIGHT-Down
-                    System.out.print("RDRDRDRDRDRDRDRDRDRDRDRDRDRDRDRD");
-                    int j = m - 1;
-                    int i = n - 1;
-                    while ((j > -1) && (i > -1)) {
-
-                        if (this.bolvanchikArrayBoard[i][j] == -1) {
-                            this.bolvanchikArrayBoard[i][j] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                        }
-                        j--;
-                        i--;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == 1) break;
-                    }
-                }
-                if (sideUR == 1) {                                                             //UP-Right
-                    System.out.print("UPUPUPUPUPUPUPUPUUPUPUPUPUPUPU");
-                    int j = m - 1;
-                    int i = n + 1;
-                    while ((j > -1) && (i <= 7)) {
-
-
-                        if (this.bolvanchikArrayBoard[i][j] == -1) {
-                            this.bolvanchikArrayBoard[i][j] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                        }
-                        j--;
-                        i++;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == 1) break;
-                    }
-                }
-                if (sideLU == 1) {                                                             //LEFT_UP
-                    System.out.print("LULULULULULULULULULULULULULULU");
-                    int j = m + 1;
-                    int i = n + 1;
-                    while ((j <= 7) && (i <= 7)) {
-
-
-                        if (this.bolvanchikArrayBoard[i][j] == -1) {
-                            this.bolvanchikArrayBoard[i][j] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                        }
-                        j--;
-                        i++;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == 1) break;
-                    }
-                }
-                if (sideDL == 1) {                                                             //down-left
-                    System.out.print("DLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDLDL");
-                    int j = m + 1;
-                    int i = n - 1;
-                    while ((j <= 7) && (i > -1)) {
-
-
-                        if (this.bolvanchikArrayBoard[i][j] == -1) {
-                            this.bolvanchikArrayBoard[i][j] = 1;
-                            this.bolvanchikArrayBoard[n][m] = 1;
-                        }
-                        j++;
-                        i--;
-                        if (j == -1) break;
-                        if (i == 8) break;
-                        if (i == -1) break;
-                        if (j == 8) break;
-                        if (this.bolvanchikArrayBoard[i][j] == 1) break;
-                    }
-                }
-
-
-                int sumSide;
-                sumSide = sideDOWN + sideLEFT + sideUP + sideRIGH + sideUR + sideRD + sideDL + sideLU;
-
-
-                if (sumSide > 0) {
-
-                    File file3 = new File("TimeSecond.txt");
-
-                    try {
-                        if (!file3.exists()) {
-                            file3.createNewFile();
-                        }
-                        PrintWriter out = new PrintWriter(file3.getAbsoluteFile());
-                        try {
-                            out.print("-1");
-                        } finally {
-                            out.close();
-                        }
-                    } catch (IOException ecept) {
-                        throw new RuntimeException(ecept);
+                        if (this.bolvanchikArrayBoard[firstN][j] == 9) break;
                     }
                 }
             }
         }
+        if (firstN + 1 < 8) {                                                                             //UP
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN + 1][firstM] == testBlackOrWhite) {
+                    for (int i = firstN + 1; i < 8; i++) {
+                        if ((this.bolvanchikArrayBoard[i][firstM] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(firstM);
+                            String strN = Integer.toString(i);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[i][firstM] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;                           //  последнее
+                                for (int n = i; n > -1; n--) {
+                                    this.bolvanchikArrayBoard[n][firstM] = mainBlackOrWhite;
+                                    if (n == firstN) break;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[i][firstM] == 9) break;
+                    }
+                }
+            }
+        }
+        if (firstN - 1 > -1) {                                                                             //Down
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN - 1][firstM] == testBlackOrWhite) {
+                    for (int i = firstN - 1; i > -1; i--) {
+                        if ((this.bolvanchikArrayBoard[i][firstM] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(firstM);
+                            String strN = Integer.toString(i);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[i][firstM] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;                           //  последнее
+                                for (int n = i; n < 8; n++) {
+                                    this.bolvanchikArrayBoard[n][firstM] = mainBlackOrWhite;
+                                    if (n == firstN) break;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[i][firstM] == 9) break;
+                    }
+                }
+            }
+        }
+        if ((firstN + 1 < 8) && (firstM + 1 < 8)) {                                          // верх-влево?
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN +1][firstM +1] == testBlackOrWhite) {
+                    int i = firstN  + 1;
+                    int j = firstM + 1;
+
+                    while ((i  < 8) && (j  < 8)) {
+                        if ((this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(j);
+                            String strN = Integer.toString(i);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[i][j] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;
+                                int m = j;
+                                int n = i;
+                                while ((-1 < n) && (-1 < m)) {
+                                    System.out.println("Ход вверх-влево");
+                                    this.bolvanchikArrayBoard[n][m] = mainBlackOrWhite;
+                                    if ((n == firstN) && (m == firstM)) break;
+                                    m--;
+                                    n--;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[i][j] == 9) break;
+                        i++;
+                        j++;
+
+                    }
+                }
+            }
+        }
+        if ((firstN - 1 > -1) && (firstM + 1 < 8)) {                                          // вниз-влево?
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN - 1][firstM +1] == testBlackOrWhite) {
+                    int i = firstN - 1;
+                    int j = firstM + 1;
+
+                    while ((i > -1) && (j  < 8)) {
+                        if ((this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(j);
+                            String strN = Integer.toString(i);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[i][j] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;
+                                int m = j;
+                                int n = i;
+                                while ((n < 8) && (-1 < m)) {
+                                    System.out.println("ход вниз-влево");
+                                    this.bolvanchikArrayBoard[n][m] = mainBlackOrWhite;
+                                    if ((n == firstN) && (m == firstM)) break;
+                                    m--;
+                                    n++;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[i][j] == 9) break;
+                        i--;
+                        j++;
+
+                    }
+                }
+            }
+        }
+        if ((firstN - 1 > -1) && (firstM - 1 > -1)) {                                          // вниз-вправо
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN - 1][firstM - 1] == testBlackOrWhite) {
+                    int i = firstN - 1;
+                    int j = firstM - 1;
+
+                    while ((i > -1) && (j > -1)) {
+                        if ((this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(j);
+                            String strN = Integer.toString(i);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[i][j] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;
+                                int m = j;
+                                int n = i;
+                                while ((n < 8) && (8 > m)) {
+                                    System.out.println("Ход вниз-вправо");
+                                    this.bolvanchikArrayBoard[n][m] = mainBlackOrWhite;
+                                    if ((n == firstN) && (m == firstM)) break;
+                                    m++;
+                                    n++;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[i][j] == 9) break;
+                        i--;
+                        j--;
+
+                    }
+                }
+            }
+        }
+        if ((firstN + 1 < 8) && (firstM - 1 > -1)) {                                          // верх-вправо
+            if (!timeBoo) {
+                if (this.bolvanchikArrayBoard[firstN + 1][firstM -1] == testBlackOrWhite) {
+                    int i = firstN + 1;
+                    int j = firstM - 1;
+
+                    while ((i < 8 ) && (j  > -1)) {
+                        if ((this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite)) {
+                            String strM = Integer.toString(j);
+                            String strN = Integer.toString(i);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[i][j] = mainBlackOrWhite;                               // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = mainBlackOrWhite;
+                                int m = j;
+                                int n = i;
+                                while ((n >-1 ) && (8> m)) {
+                                    System.out.println("ход верх-вправо");
+                                    this.bolvanchikArrayBoard[n][m] = mainBlackOrWhite;
+                                    if ((n == firstN) && (m == firstM)) break;
+                                    m++;
+                                    n--;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[i][j] == 9) break;
+                        i++;
+                        j--;
+
+                    }
+                }
+            }
+        }
+/*
+        if (blackOrWhite.equals("1")) {                                                                     //!!!!!!!!!!!!!!!!!!!
+            if (firstM + 1 < 8) {                                                                             //Left
+                System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            //    if (!timeBoo) {
+                    if (this.bolvanchikArrayBoard[firstN][firstM + 1] == -1) {
+                        System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        for (int j = firstM + 1; j < 8; j++) {
+                            if ((this.bolvanchikArrayBoard[firstN][j] == 1)) {
+                                System.out.println("\n!!!!!!!!!!!!!");
+                                String strM = Integer.toString(j);
+                                String strN = Integer.toString(firstN);
+                                System.out.println(strM);
+                                System.out.println(secondM);
+                                System.out.println(strN);
+                                System.out.println(secondN);
+                                if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                    System.out.println("\n!!!!!");
+                                    timeBoo = true;
+                                    this.bolvanchikArrayBoard[firstN][j] = 1;                               // исходное
+                                    this.bolvanchikArrayBoard[firstN][firstM] = 1;                           //  последнее
+                                    for (int m = j; m > -1; m--) {
+                                        this.bolvanchikArrayBoard[firstN][m] = 1;
+                                        if (m == firstM) break;
+                                    }
+                                }
+                            }
+                            if (this.bolvanchikArrayBoard[firstN][j] == 9) break;
+                        }
+                    }
+           //     }
+            }
+            if (firstM - 1 > -1) {
+
+                System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                if (this.bolvanchikArrayBoard[firstN][firstM - 1] == -1) {
+                    System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    for (int j = firstM - 1; j > -1; j--) {
+                        if ((this.bolvanchikArrayBoard[firstN][j] == 1)) {
+                            String strM = Integer.toString(j);
+                            String strN = Integer.toString(firstN);
+                            if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                timeBoo = true;
+                                this.bolvanchikArrayBoard[firstN][j] = 1;              // исходное
+                                this.bolvanchikArrayBoard[firstN][firstM] = 1;             //  последнее
+                                for (int m = j; 8 > m; m++) {
+                                    this.bolvanchikArrayBoard[firstN][m] = 1;
+                                    if (m == firstM) break;
+                                }
+                            }
+                        }
+                        if (this.bolvanchikArrayBoard[firstN][j] == 9) break;
+                    }
+                }
+
+            }
+
+            if (firstN + 1 < 8) {                                                                             //UP
+                System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                if (!timeBoo) {
+                    if (this.bolvanchikArrayBoard[firstN + 1][firstM] == -1) {
+                        System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        for (int i = firstN + 1; i < 8; i++) {
+                            if ((this.bolvanchikArrayBoard[i][firstM] == 1)) {
+                                String strM = Integer.toString(firstM);
+                                String strN = Integer.toString(i);
+                                if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                    timeBoo = true;
+                                    this.bolvanchikArrayBoard[i][firstM] = 1;                               // исходное
+                                    this.bolvanchikArrayBoard[firstN][firstM] = 1;                           //  последнее
+                                    for (int n = i; n > -1; n--) {
+                                        this.bolvanchikArrayBoard[n][firstM] = 1;
+                                        if (n == firstN) break;
+                                    }
+                                }
+                            }
+                            if (this.bolvanchikArrayBoard[i][firstM] == 9) break;
+                        }
+                    }
+                }
+            }
+            if (firstN - 1 > -1) {                                                                             //Down
+                System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                if (!timeBoo) {
+                    if (this.bolvanchikArrayBoard[firstN - 1][firstM] == -1) {
+                        System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        for (int i = firstN - 1; i > -1; i--) {
+                            if ((this.bolvanchikArrayBoard[i][firstM] == 1)) {
+                                String strM = Integer.toString(firstM);
+                                String strN = Integer.toString(i);
+                                if ((strM.equals(secondM)) && (strN.equals(secondN))) {
+                                    timeBoo = true;
+                                    this.bolvanchikArrayBoard[i][firstM] = 1;                               // исходное
+                                    this.bolvanchikArrayBoard[firstN][firstM] = 1;                           //  последнее
+                                    for (int n = i; n < 8; n++) {
+                                        this.bolvanchikArrayBoard[n][firstM] = 1;
+                                        if (n == firstN) break;
+                                    }
+                                }
+                            }
+                            if (this.bolvanchikArrayBoard[i][firstM] == 9) break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+ */
+
+
+        if (timeBoo) {
+            File file3 = new File("TimeSecond.txt");
+
+            try {
+                if (!file3.exists()) {
+                    file3.createNewFile();
+                }
+                try (PrintWriter out = new PrintWriter(file3.getAbsoluteFile())) {
+                    if (writeWhiteOrBlack) {
+                        out.print("1");
+                    } else {
+                        out.print("-1");
+                    }
+
+                }
+            } catch (IOException ecept) {
+                throw new RuntimeException(ecept);
+            }
+        }
+
+        PrintWriter out = new PrintWriter(file3.getAbsoluteFile());
+        try {
+            out.print("Line");
+        } finally {
+            out.close();
+        }
+    }
+
+
+    String NewClickWay(int m, int n, String blackOrWhite) throws FileNotFoundException {            // е: камон, если бы я не прочитал файл я бы тут не оказался
+        String timeArrToWay = "";
+        int wayUpIsOpen = 9;
+        int wayDownIsOpen = 9;
+        int wayLeftIsOpen = 9;
+        int wayRightIsOpen = 9;
+        int wayURIsOpen = 9;
+        int wayRDIsOpen = 9;
+        int wayDLIsOpen = 9;
+        int wayLUIsOpen = 9;
+
+        int mainBlackOrWhite = 1;
+        int testBlackOrWhite = -1;
+
+        if (blackOrWhite.equals("-1")) {            // white
+            mainBlackOrWhite = -1;
+            testBlackOrWhite = 1;
+
+        }
+
+
+        if (this.bolvanchikArrayBoard[n][m] == mainBlackOrWhite) {                                    //??
+            if (m - 1 > -1) {
+                if (this.bolvanchikArrayBoard[n][m - 1] == testBlackOrWhite) {
+                    for (int j = m - 1; j > -1; j--) {
+                        if (this.bolvanchikArrayBoard[n][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[n][j] == 9) {
+                            System.out.println("     доступен шаг влево");
+                            wayLeftIsOpen = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (n - 1 > -1) {
+                if (this.bolvanchikArrayBoard[n - 1][m] == testBlackOrWhite) {
+                    for (int i = n - 1; i > -1; i--) {
+                        if (this.bolvanchikArrayBoard[i][m] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[i][m] == 9) {
+                            System.out.println("     доступен шаг вверх");
+                            wayUpIsOpen = 0;
+                            break;
+                        }
+
+                    }
+                }
+            }
+            if (m + 1 < 8) {
+                if (this.bolvanchikArrayBoard[n][m + 1] == testBlackOrWhite) {
+                    for (int j = m + 1; j < 8; j++) {
+                        if (this.bolvanchikArrayBoard[n][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[n][j] == 9) {
+                            System.out.println("     доступен шаг вправо");
+                            wayRightIsOpen = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (n + 1 < 8) {
+                if (this.bolvanchikArrayBoard[n + 1][m] == testBlackOrWhite) {
+                    for (int i = n + 1; i < 8; i++) {
+                        if (this.bolvanchikArrayBoard[i][m] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[i][m] == 9) {
+                            System.out.println("     доступен шаг вниз");
+                            wayDownIsOpen = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (m - 1 > -1) {
+                if (this.bolvanchikArrayBoard[n][m - 1] == testBlackOrWhite) {
+                    for (int j = m - 1; j > -1; j--) {
+                        if (this.bolvanchikArrayBoard[n][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[n][j] == 9) {
+                            System.out.println("     доступен шаг влево");
+                            wayLeftIsOpen = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+            if ((n + 1 < 7) && (m - 1 > -1)) {                                                     // UP-RIGHT
+                if (this.bolvanchikArrayBoard[n + 1][m - 1] == testBlackOrWhite) {
+                    int i = n + 1;
+                    int j = m - 1;
+                    while ((i < 8) && (j > -1)) {
+                        if (this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[i][j] == 9) {
+                            System.out.println("     доступен шаг влево-вниз");
+                            wayDLIsOpen = 0;
+                            break;
+                        }
+                        i++;
+                        j--;
+                    }
+                }
+            }
+            if ((n + 1 < 7) && (m + 1 < 7)) {                                          // LEFT_UP
+                if (this.bolvanchikArrayBoard[n + 1][m + 1] == testBlackOrWhite) {
+                    int i = n + 1;
+                    int j = m + 1;
+                    while ((i < 8) && (j < 8)) {
+                        if (this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[i][j] == 9) {
+                            System.out.println("     доступен шаг Вправо-вниз");
+                            wayDLIsOpen = 0;
+                            break;
+                        }
+                        i++;
+                        j++;
+                    }
+                }
+            }
+            if ((n - 1 > -1) && (m + 1 < 7)) {                                          // Down-left
+                if (this.bolvanchikArrayBoard[n - 1][m + 1] == testBlackOrWhite) {
+                    int i = n - 1;
+                    int j = m + 1;
+                    while ((i > -1) && (j < 8)) {
+                        if (this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[i][j] == 9) {
+                            System.out.println("     доступен шаг Вправо-Вверх");
+                            wayDLIsOpen = 0;
+                            break;
+                        }
+                        i--;
+                        j++;
+                    }
+                }
+            }
+            if ((n - 1 > -1) && (m - 1 > -1)) {                                          // RIGHT-Down
+                if (this.bolvanchikArrayBoard[n - 1][m - 1] == testBlackOrWhite) {
+                    int i = n - 1;
+                    int j = m - 1;
+                    while ((i > -1) && (j > -1)) {
+                        if (this.bolvanchikArrayBoard[i][j] == mainBlackOrWhite) break;
+                        if (this.bolvanchikArrayBoard[i][j] == 9) {
+                            System.out.println("     доступен шаг Вверх-Влево");
+                            wayDLIsOpen = 0;
+                            break;
+                        }
+                        i--;
+                        j--;
+
+                    }
+                }
+            }
+            timeArrToWay = Integer.toString(wayUpIsOpen) + Integer.toString(wayDownIsOpen) + Integer.toString(wayLeftIsOpen) + Integer.toString(wayRightIsOpen)
+                    + Integer.toString(wayURIsOpen) + Integer.toString(wayRDIsOpen) + Integer.toString(wayDLIsOpen) + Integer.toString(wayLUIsOpen) + "!!!" + n + m + "&&&";
+        }
+
+
+        PrintWriter out = new PrintWriter(file3.getAbsoluteFile());
+        try {
+            if (timeArrToWay.equals("")) {
+                out.print("Line");
+            } else out.print(timeArrToWay);
+
+        } finally {
+            out.close();
+        }
+        return timeArrToWay;
     }
 
     void NGBoard() {
@@ -866,11 +899,6 @@ class ArrayBoard {
 
 class TimeNumber {
     private String numberOfButton = "";
-
-    String Test1(String time) {
-        this.numberOfButton = time;
-        return time;
-    }
 
     void TestString(String time) {
         numberOfButton = time;
